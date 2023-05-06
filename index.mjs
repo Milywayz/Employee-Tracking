@@ -180,3 +180,41 @@ async function AddAEmployee() {
    })
 
 }
+
+async function AddAManager() {
+    
+    let { firstName, lastName, roleId, managerId} = await inquirer.prompt([
+        {
+        type: 'input',
+        name: 'firstName',
+        message: 'What is the first name of the employee?',
+    },
+    {
+        type: 'input',
+        name: 'lastName',
+        message: 'What is the last name of the employee?',
+    },
+    {
+        type: 'input',
+        name: 'roleId',
+        message: 'What is the role ID of the employee? (please use an existing roleID)',
+    },
+    {
+        type: 'input',
+        name: 'managerId',
+        message: 'What is the manager ID of the employee?',
+    }
+   ])
+
+   const [rows] = await promisePool.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)', [firstName, lastName, roleId, managerId], function (err, results) {
+    if (rows.length === 0) {
+        console.log("Can't enter in that manager employee");
+    } else {
+        console.table(rows);
+        start()
+
+    }
+
+   })
+
+}
