@@ -1,7 +1,5 @@
-// import mysql from "mysql2"
-// import inquirer from "inquirer";
-const inquirer = require("inquirer")
-const mysql = require("mysql2")
+import mysql from "mysql2"
+import inquirer from "inquirer";
 
 
 const pool = mysql.createPool({
@@ -15,20 +13,22 @@ const pool = mysql.createPool({
     idleTimeout: 6000,
     queueLimit: 0
 })
+
 const promisePool = pool.promise();
+start();
 
 async function start() {
     const initialPrompt = await inquirer
         .prompt([
             {
                 type: 'list',
-                name: '',
+                name: 'Employee Manager',
                 message: '',
                 choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', "Add A Role", "Add A Employee", 'Add a Manager', 'Update An Employee Role'],
 
             },
         ])
-        switch (initialPrompt) {
+        switch (initialPrompt['Employee Manager']) {
         
             case 'View All Departments':
                 viewAllDepartments();
@@ -59,21 +59,38 @@ async function start() {
         }
 }
 
-start();
+async function viewAllDepartments() {
 
+    const [rows] = await promisePool.query("SELECT * FROM departments")
 
-async function findEmployee() {
+    if (rows.length === 0) {
+        console.log("No departments to display.");
+      } else {
+        console.table(rows);
+      }
 
+}
 
-    let { } = await inquirer.prompt({
+async function ViewAllRoles() {
 
+    const [rows] = await promisePool.query("SELECT * FROM roles")
 
-    })
+    if (rows.length === 0) {
+        console.log("No roles to display.");
+      } else {
+        console.table(rows);
+      }
 
+}
 
-    const [rows, fields] = await promisePool.query("SELECT * FROM ")
+async function viewAllEmployees() {
 
-    console.table(rows)
+    const [rows] = await promisePool.query("SELECT * FROM employee JOIN roles ON employee.roles = roles.id")
 
+    if (rows.length === 0) {
+        console.log("No employee to display.");
+      } else {
+        console.table(rows);
+      }
 
 }
