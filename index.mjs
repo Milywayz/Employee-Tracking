@@ -28,35 +28,35 @@ async function start() {
 
             },
         ])
-        switch (initialPrompt['Employee Manager']) {
-        
-            case 'View All Departments':
-                viewAllDepartments();
-                break;
-                case 'View All Roles':
-                ViewAllRoles();
-                break;
-                case 'View All Employees':
-                viewAllEmployees();
-                break;
-                case 'Add A Department':
-                AddADepartment();
-                break;
-                case 'Add A Role':
-                AddARole();
-                break;
-                case 'Add A Employee':
-                AddAEmployee();
-                break;
-                case 'Add a Manager':
-                AddAManager();
-                break;
-                case 'Update An Employee Role':
-                UpdateAnEmployeeRole();
-                break;
-            default:
-                break;
-        }
+    switch (initialPrompt['Employee Manager']) {
+
+        case 'View All Departments':
+            viewAllDepartments();
+            break;
+        case 'View All Roles':
+            ViewAllRoles();
+            break;
+        case 'View All Employees':
+            viewAllEmployees();
+            break;
+        case 'Add A Department':
+            AddADepartment();
+            break;
+        case 'Add A Role':
+            AddARole();
+            break;
+        case 'Add A Employee':
+            AddAEmployee();
+            break;
+        case 'Add a Manager':
+            AddAManager();
+            break;
+        case 'Update An Employee Role':
+            UpdateAnEmployeeRole();
+            break;
+        default:
+            break;
+    }
 }
 
 async function viewAllDepartments() {
@@ -65,9 +65,9 @@ async function viewAllDepartments() {
 
     if (rows.length === 0) {
         console.log("No departments to display.");
-      } else {
+    } else {
         console.table(rows);
-      }
+    }
 
 }
 
@@ -77,20 +77,30 @@ async function ViewAllRoles() {
 
     if (rows.length === 0) {
         console.log("No roles to display.");
-      } else {
+    } else {
         console.table(rows);
-      }
+    }
 
 }
 
 async function viewAllEmployees() {
 
-    const [rows] = await promisePool.query("SELECT * FROM employee JOIN roles ON employee.roles = roles.id")
+    const [rows] = await promisePool.query(`SELECT e.id, e.first_name, e.last_name, r.title, d.department_name, r.salary, CONCAT(e.first_name, ' ', e.last_name) AS manager_name
+    FROM employee AS e
+    JOIN roles AS r ON e.role_id = r.id
+    JOIN departments AS d ON r.department_id = d.id;`)
 
     if (rows.length === 0) {
         console.log("No employee to display.");
-      } else {
+    } else {
         console.table(rows);
-      }
+    }
 
+}
+
+async function AddADepartment() {
+
+   
+
+    
 }
