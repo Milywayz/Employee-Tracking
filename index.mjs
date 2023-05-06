@@ -124,6 +124,8 @@ async function AddADepartment() {
 
  }
 async function AddARole() {
+    const [rowS] = await promisePool.query("SELECT department_name FROM departments")
+    const departments = rowS.map(row => row.department_name);
     
     let { title, salary, departmentId} = await inquirer.prompt([
         {
@@ -137,9 +139,10 @@ async function AddARole() {
         message: 'What is the salary of the role?',
     },
     {
-        type: 'input',
+        type: 'list',
         name: 'departmentId',
         message: 'What is the departmentId of the role? (please use an existing departmentID)',
+        choices: [...departments]
     }
    ])
 
@@ -218,7 +221,38 @@ async function AddAManager() {
     } else {
         console.table(rows)
         start()
+    }
 
+   })
+
+}
+
+async function UpdateAnEmployeeRole() {
+    
+    let { firstName, lastName, roleId} = await inquirer.prompt([
+        {
+        type: 'input',
+        name: 'firstName',
+        message: 'What is the first name of the employee?',
+    },
+    {
+        type: 'input',
+        name: 'lastName',
+        message: 'What is the last name of the employee?',
+    },
+    {
+        type: 'input',
+        name: 'roleId',
+        message: 'What is the role ID of the employee? (please use an existing roleID)',
+    }
+   ])
+
+   const [rows] = await promisePool.query('UPDATE employee SET  (first_name, last_name, role_id) VALUES (?, ?, ?)', [firstName, lastName, roleId], function (err, results) {
+    if (rows.length === 0) {
+        console.log("Can't enter in that employee");
+    } else {
+        console.table(rows)
+        start()
     }
 
    })
