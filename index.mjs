@@ -100,7 +100,22 @@ async function viewAllEmployees() {
 
 async function AddADepartment() {
 
-   
+   let { departmentName } = await inquirer.prompt([
+    {
+        type: 'input',
+        name: 'departmentName',
+        message: 'What is the name of the department?',
+    }
+   ])
 
-    
+   const [rows] = await promisePool.query('INSERT INTO departments (department_name) VALUES (?)', departmentName, function (err, results) {
+    if (rows.length === 0) {
+        console.log("No employee to display.");
+    } else {
+        console.table(rows);
+    }
+
+   })
+
+
 }
