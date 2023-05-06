@@ -3,12 +3,12 @@ CREATE DATABASE employment_db;
 
 USE employment_db;
 
-CREATE TABLE department(
+CREATE TABLE departments(
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(30) NOT NULL,
+    department_name VARCHAR(30) NOT NULL,
 );
 
-CREATE TABLE role(
+CREATE TABLE roles(
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(30),
     salary DECIMAL,
