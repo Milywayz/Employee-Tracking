@@ -66,7 +66,8 @@ async function viewAllDepartments() {
     if (rows.length === 0) {
         console.log("No departments to display.");
     } else {
-        console.table(rows);
+        console.table(rows)
+        start()
     }
 
 }
@@ -78,7 +79,8 @@ async function ViewAllRoles() {
     if (rows.length === 0) {
         console.log("No roles to display.");
     } else {
-        console.table(rows);
+        console.table(rows)
+        start()
     }
 
 }
@@ -93,7 +95,8 @@ async function viewAllEmployees() {
     if (rows.length === 0) {
         console.log("No employee to display.");
     } else {
-        console.table(rows);
+        console.table(rows)
+        start()
     }
     
 }
@@ -112,7 +115,8 @@ async function AddADepartment() {
      if (rows.length === 0) {
          console.log("Can't enter in that department");
      } else {
-         console.table(rows);
+         console.table(rows)
+         start()
      }
  
     })
@@ -143,7 +147,8 @@ async function AddARole() {
     if (rows.length === 0) {
         console.log("Please make sure you put in an departmentId that already exist");
     } else {
-        console.table(rows);
+        console.table(rows)
+        start()
     }
 
    })
@@ -174,7 +179,8 @@ async function AddAEmployee() {
     if (rows.length === 0) {
         console.log("Can't enter in that employee");
     } else {
-        console.table(rows);
+        console.table(rows)
+        start()
     }
 
    })
@@ -210,7 +216,7 @@ async function AddAManager() {
     if (rows.length === 0) {
         console.log("Can't enter in that manager employee");
     } else {
-        console.table(rows);
+        console.table(rows)
         start()
 
     }
