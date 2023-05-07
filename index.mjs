@@ -24,7 +24,7 @@ async function start() {
                 type: 'list',
                 name: 'Employee Manager',
                 message: 'What would you like to do?',
-                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', "Add A Role", "Add A Employee", 'Update An Employee Role'],
+                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', "Add A Role", "Add A Employee", 'Update An Employee Role', 'Exit'],
 
             },
         ])
@@ -51,6 +51,9 @@ async function start() {
         case 'Update An Employee Role':
             UpdateAnEmployeeRole();
             break;
+        case 'Exit':
+            console.log('Exiting now...');
+            return; 
         default:
             break;
     }
@@ -110,7 +113,7 @@ async function AddADepartment() {
             console.log("Can't enter in that department");
         } else {
             console.table(rows)
-            
+
         }
     })
     start()
@@ -145,7 +148,7 @@ async function AddARole() {
             console.log("Please make sure you put in an departmentId that already exist");
         } else {
             console.table(rows)
-            
+
         }
 
     })
@@ -230,7 +233,7 @@ async function UpdateAnEmployeeRole() {
             console.log("Can't enter in that employee");
         } else {
             console.table(rows)
-        
+
         }
 
     })
