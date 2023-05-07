@@ -162,10 +162,19 @@ async function AddARole() {
 }
 
 async function AddAEmployee() {
-    const [rowS] = await promisePool.query("SELECT role_id FROM employee")
-    const employees = rowS.map(row => row.role_id);
+    const [rowS] = await promisePool.query("SELECT id, title FROM roles")
+    const employees = rowS.map(({ id, title }) => ({
+        name: title,
+        value: id
+    }));
 
-    let { firstName, lastName, roleId } = await inquirer.prompt([
+    const [row] = await promisePool.query('SELECT id, CONCAT(first_name, " ", last_name) AS managerName FROM employee')
+    const managers = row.map(({ id, managerName }) => ({
+        managerName,
+        value: id,
+    }));
+
+    let { firstName, lastName, role, manager } = await inquirer.prompt([
         {
             type: 'input',
             name: 'firstName',
@@ -178,22 +187,28 @@ async function AddAEmployee() {
         },
         {
             type: 'list',
-            name: 'roleId',
-            message: 'What is the role ID of the employee?',
+            name: 'role',
+            message: 'What is the role of the employee?',
             choices: [...employees]
+        },
+        {
+            type: 'list',
+            name: 'manager',
+            message: 'Select the employees manager?',
+            choices: [{ name: "None", value: null }, ...managers]
         }
     ])
 
-    const [rows] = await promisePool.query('INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)', [firstName, lastName, roleId], function (err, results) {
+    const [rows] = await promisePool.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)', [firstName, lastName, role, manager], function (err, results) {
         if (rows.length === 0) {
             console.log("Can't enter in that employee");
         } else {
             console.table(rows)
-            start()
+           
         }
 
     })
-
+    start()
 }
 
 async function AddAManager() {
