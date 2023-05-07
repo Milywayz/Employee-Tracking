@@ -159,17 +159,14 @@ async function AddARole() {
 }
 
 async function AddAEmployee() {
-    const [rowS] = await promisePool.query("SELECT id, title FROM roles")
-    const employees = rowS.map(({ id, title }) => ({
-        name: title,
-        value: id
-    }));
-
-    const [row] = await promisePool.query('SELECT id, CONCAT(first_name, " ", last_name) AS managerName FROM employee')
-    const managers = row.map(({ id, managerName }) => ({
-        managerName,
-        value: id,
-    }));
+    const [rolesResult, managersResult] = await Promise.all([
+        promisePool.query("SELECT id, title FROM roles"),
+        promisePool.query("SELECT id, CONCAT(first_name, ' ', last_name) AS manager_name FROM employee")
+      ]);
+    
+      const employees = rolesResult[0].map(row => ({ name: row.title, value: row.role_id }));
+      const managers = managersResult[0].map(row => ({ name: row.manager_name, value: row.id }));
+    
 
     let { firstName, lastName, role, manager } = await inquirer.prompt([
         {
@@ -209,26 +206,31 @@ async function AddAEmployee() {
 }
 
 async function UpdateAnEmployeeRole() {
-
-    let { firstName, lastName, roleId } = await inquirer.prompt([
+    const [rolesResult, employeesResult] = await Promise.all([
+        promisePool.query("SELECT id, title FROM roles"),
+        promisePool.query("SELECT id, CONCAT(first_name, ' ', last_name) AS employee_name FROM employee")
+      ]);
+    
+      const roles = rolesResult[0].map(row => ({ name: row.title, value: row.id }));
+      const employees = employeesResult[0].map(row => ({ name: row.employee_name, value: row.id }));
+    
+      let { employeeName, role } = await inquirer.prompt([
         {
-            type: 'input',
-            name: 'firstName',
-            message: 'What is the first name of the employee?',
+          type: 'list',
+          name: 'employeeName',
+          message: 'Select the employee you would like to update:',
+          choices: [...employees]
         },
         {
-            type: 'input',
-            name: 'lastName',
-            message: 'What is the last name of the employee?',
-        },
-        {
-            type: 'input',
-            name: 'roleId',
-            message: 'What is the role ID of the employee? (please use an existing roleID)',
+          type: 'list',
+          name: 'role',
+          message: 'Select the new role for the employee:',
+          choices: [...roles]
         }
-    ])
+      ]);
+    
 
-    const [rows] = await promisePool.query('UPDATE employee SET  (first_name, last_name, role_id) VALUES (?, ?, ?)', [firstName, lastName, roleId], function (err, results) {
+    const [rows] = await promisePool.query('UPDATE employee SET role_id = ? WHERE id = ?', [role, employeeName], function (err, results) {
         if (rows.length === 0) {
             console.log("Can't enter in that employee");
         } else {
