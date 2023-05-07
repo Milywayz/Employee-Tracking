@@ -23,7 +23,7 @@ async function start() {
             {
                 type: 'list',
                 name: 'Employee Manager',
-                message: '',
+                message: 'What would you like to do?',
                 choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', "Add A Role", "Add A Employee", 'Update An Employee Role'],
 
             },
@@ -71,7 +71,7 @@ async function viewAllDepartments() {
 
 async function ViewAllRoles() {
 
-    const [rows] = await promisePool.query("SELECT * FROM roles")
+    const [rows] = await promisePool.query("SELECT roles.id, roles.title, departments.department_name, roles.salary FROM roles JOIN departments ON roles.department_id = departments.id;")
 
     if (rows.length === 0) {
         console.log("No roles to display.");
@@ -84,13 +84,7 @@ async function ViewAllRoles() {
 
 async function viewAllEmployees() {
 
-    const [rows] = await promisePool.query(`SELECT e.id AS employee_id, e.first_name AS employee_first_name, e.last_name AS employee_last_name,
-    r.title, d.department_name, r.salary,
-    CONCAT(m.first_name, ' ', m.last_name) AS manager
-FROM employee e
-LEFT JOIN employee m ON e.manager_id = m.id
-LEFT JOIN roles r ON e.role_id = r.id
-LEFT JOIN departments d ON r.department_id = d.id;`)
+    const [rows] = await promisePool.query('SELECT e.id AS employee_id, e.first_name AS employee_first_name, e.last_name AS employee_last_name, r.title, d.department_name, r.salary, CONCAT(m.first_name, " ", m.last_name) AS manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id LEFT JOIN roles r ON e.role_id = r.id LEFT JOIN departments d ON r.department_id = d.id;')
 
     if (rows.length === 0) {
         console.log("No employee to display.");
@@ -116,11 +110,10 @@ async function AddADepartment() {
             console.log("Can't enter in that department");
         } else {
             console.table(rows)
-            start()
+            
         }
-
     })
-
+    start()
 
 }
 async function AddARole() {
@@ -152,10 +145,11 @@ async function AddARole() {
             console.log("Please make sure you put in an departmentId that already exist");
         } else {
             console.table(rows)
-            start()
+            
         }
 
     })
+    start()
 
 }
 
@@ -163,11 +157,11 @@ async function AddAEmployee() {
     const [rolesResult, managersResult] = await Promise.all([
         promisePool.query("SELECT id, title FROM roles"),
         promisePool.query("SELECT id, CONCAT(first_name, ' ', last_name) AS manager_name FROM employee")
-      ]);
-    
-      const employees = rolesResult[0].map(row => ({ name: row.title, value: row.id }));
-      const managers = managersResult[0].map(row => ({ name: row.manager_name, value: row.id }));
-    
+    ]);
+
+    const employees = rolesResult[0].map(row => ({ name: row.title, value: row.id }));
+    const managers = managersResult[0].map(row => ({ name: row.manager_name, value: row.id }));
+
 
     let { firstName, lastName, role, manager } = await inquirer.prompt([
         {
@@ -199,7 +193,7 @@ async function AddAEmployee() {
             console.log("Can't enter in that employee");
         } else {
             console.table(rows)
-           
+
         }
 
     })
@@ -210,35 +204,35 @@ async function UpdateAnEmployeeRole() {
     const [rolesResult, employeesResult] = await Promise.all([
         promisePool.query("SELECT id, title FROM roles"),
         promisePool.query("SELECT id, CONCAT(first_name, ' ', last_name) AS employee_name FROM employee")
-      ]);
-    
-      const roles = rolesResult[0].map(row => ({ name: row.title, value: row.id }));
-      const employees = employeesResult[0].map(row => ({ name: row.employee_name, value: row.id }));
-    
-      let { employeeName, role } = await inquirer.prompt([
+    ]);
+
+    const roles = rolesResult[0].map(row => ({ name: row.title, value: row.id }));
+    const employees = employeesResult[0].map(row => ({ name: row.employee_name, value: row.id }));
+
+    let { employeeName, role } = await inquirer.prompt([
         {
-          type: 'list',
-          name: 'employeeName',
-          message: 'Select the employee you would like to update:',
-          choices: [...employees]
+            type: 'list',
+            name: 'employeeName',
+            message: 'Select the employee you would like to update:',
+            choices: [...employees]
         },
         {
-          type: 'list',
-          name: 'role',
-          message: 'Select the new role for the employee:',
-          choices: [...roles]
+            type: 'list',
+            name: 'role',
+            message: 'Select the new role for the employee:',
+            choices: [...roles]
         }
-      ]);
-    
+    ]);
+
 
     const [rows] = await promisePool.query('UPDATE employee SET role_id = ? WHERE id = ?', [role, employeeName], function (err, results) {
         if (rows.length === 0) {
             console.log("Can't enter in that employee");
         } else {
             console.table(rows)
-            start()
+        
         }
 
     })
-
+    start()
 }
