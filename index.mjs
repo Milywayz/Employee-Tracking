@@ -24,7 +24,7 @@ async function start() {
                 type: 'list',
                 name: 'Employee Manager',
                 message: '',
-                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', "Add A Role", "Add A Employee", 'Add a Manager', 'Update An Employee Role'],
+                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', "Add A Role", "Add A Employee", 'Update An Employee Role'],
 
             },
         ])
@@ -47,9 +47,6 @@ async function start() {
             break;
         case 'Add A Employee':
             AddAEmployee();
-            break;
-        case 'Add a Manager':
-            AddAManager();
             break;
         case 'Update An Employee Role':
             UpdateAnEmployeeRole();
@@ -209,50 +206,6 @@ async function AddAEmployee() {
 
     })
     start()
-}
-
-async function AddAManager() {
-    const [rowS] = await promisePool.query("SELECT role_id FROM employee")
-    const employees = rowS.map(row => row.role_id);
-
-    const [rowSs] = await promisePool.query("SELECT manager_id FROM employee")
-    const managers = rowSs.map(row => row.manager_id);
-
-    let { firstName, lastName, roleId, managerId } = await inquirer.prompt([
-        {
-            type: 'input',
-            name: 'firstName',
-            message: 'What is the first name of the employee?',
-        },
-        {
-            type: 'input',
-            name: 'lastName',
-            message: 'What is the last name of the employee?',
-        },
-         {
-            type: 'list',
-            name: 'roleId',
-            message: 'What is the role ID of the employee?',
-            choices: [...employees]
-        },
-        {
-            type: 'list',
-            name: 'managerId',
-            message: 'What is the role ID of the employee?',
-            choices: [...managers]
-        }
-    ])
-
-    const [rows] = await promisePool.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)', [firstName, lastName, roleId, managerId], function (err, results) {
-        if (rows.length === 0) {
-            console.log("Can't enter in that manager employee");
-        } else {
-            console.table(rows)
-            start()
-        }
-
-    })
-
 }
 
 async function UpdateAnEmployeeRole() {
