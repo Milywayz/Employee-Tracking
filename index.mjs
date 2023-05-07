@@ -24,7 +24,7 @@ async function start() {
                 type: 'list',
                 name: 'Employee Manager',
                 message: 'What would you like to do?',
-                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', "Add A Role", "Add A Employee", 'Update An Employee Role', 'Exit'],
+                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', "Add A Role", "Add A Employee", 'Update An Employee Role', 'Update A Manager Role', 'Exit'],
 
             },
         ])
@@ -50,6 +50,9 @@ async function start() {
             break;
         case 'Update An Employee Role':
             UpdateAnEmployeeRole();
+            break;
+            case 'Update A Manager Role':
+            UpdateAManager();
             break;
         case 'Exit':
             console.log('Exiting now...');
@@ -229,6 +232,43 @@ async function UpdateAnEmployeeRole() {
 
 
     const [rows] = await promisePool.query('UPDATE employee SET role_id = ? WHERE id = ?', [role, employeeName], function (err, results) {
+        if (rows.length === 0) {
+            console.log("Can't enter in that employee");
+        } else {
+            console.table(rows)
+
+        }
+
+    })
+    start()
+}
+
+async function UpdateAManager() {
+    const [managersResult, employeesResult] = await Promise.all([
+        promisePool.query("SELECT id, CONCAT(first_name, ' ', last_name) AS manager_name FROM employee"),
+        promisePool.query("SELECT id, CONCAT(first_name, ' ', last_name) AS employee_name FROM employee")
+    ]);
+
+    const managers = managersResult[0].map(row => ({ name: row.manager_name, value: row.id }));
+    const employees = employeesResult[0].map(row => ({ name: row.employee_name, value: row.id }));
+
+    let { employeeName, role } = await inquirer.prompt([
+        {
+            type: 'list',
+            name: 'employeeName',
+            message: 'Select the employee you would like to update:',
+            choices: [...employees]
+        },
+        {
+            type: 'list',
+            name: 'role',
+            message: 'Do you want them to become a manager or give them a new manager?',
+            choices: [{ name: "Become A Manager", value: null }, ...managers]
+        }
+    ]);
+
+
+    const [rows] = await promisePool.query('UPDATE employee SET manager_id = ? WHERE id = ?', [role, employeeName], function (err, results) {
         if (rows.length === 0) {
             console.log("Can't enter in that employee");
         } else {
