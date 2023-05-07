@@ -165,7 +165,7 @@ async function AddAEmployee() {
         promisePool.query("SELECT id, CONCAT(first_name, ' ', last_name) AS manager_name FROM employee")
       ]);
     
-      const employees = rolesResult[0].map(row => ({ name: row.title, value: row.role_id }));
+      const employees = rolesResult[0].map(row => ({ name: row.title, value: row.id }));
       const managers = managersResult[0].map(row => ({ name: row.manager_name, value: row.id }));
     
 
