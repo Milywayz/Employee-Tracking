@@ -64,9 +64,9 @@ async function viewAllDepartments() {
         console.log("No departments to display.");
     } else {
         console.table(rows)
-        start()
-    }
 
+    }
+    start()
 }
 
 async function ViewAllRoles() {
@@ -124,8 +124,9 @@ async function AddADepartment() {
 
 }
 async function AddARole() {
-    const [rowS] = await promisePool.query("SELECT department_name FROM departments")
-    const departments = rowS.map(row => row.department_name);
+
+    const [rowS] = await promisePool.query("SELECT id, department_name FROM departments");
+    const departments = rowS.map(row => ({ name: row.department_name, value: row.id }));
 
     let { title, salary, departmentId } = await inquirer.prompt([
         {
