@@ -17,7 +17,7 @@ inquirer and mysql2 is installed into this project for functioning
 
 ## Usage
 
-![alt text](./assets/Program-Image.png)
+![alt text](./assets/Program-Image.png)<br>
 [Click here to see Deployed Application](https://watch.screencastify.com/v/xezSbRPqhQk5lrOmhP8x)
 
 
