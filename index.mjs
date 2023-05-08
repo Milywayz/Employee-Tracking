@@ -1,7 +1,8 @@
+// Imports from package.json
 import mysql from "mysql2"
 import inquirer from "inquirer";
 
-
+// Connects to workbench
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
@@ -13,10 +14,10 @@ const pool = mysql.createPool({
     idleTimeout: 6000,
     queueLimit: 0
 })
-
+// variable and the start function
 const promisePool = pool.promise();
 start();
-
+// Start of the Inquirer
 async function start() {
     const initialPrompt = await inquirer
         .prompt([
@@ -28,6 +29,7 @@ async function start() {
 
             },
         ])
+        // Switch case to which inquirer function to use based of input
     switch (initialPrompt['Employee Manager']) {
 
         case 'View All Departments':
@@ -70,7 +72,7 @@ async function start() {
             break;
     }
 }
-
+// View All Departments function
 async function viewAllDepartments() {
 
     const [rows] = await promisePool.query("SELECT * FROM departments")
@@ -83,7 +85,7 @@ async function viewAllDepartments() {
     }
     start()
 }
-
+//  View All Roles function
 async function ViewAllRoles() {
 
     const [rows] = await promisePool.query("SELECT roles.id, roles.title, departments.department_name, roles.salary FROM roles JOIN departments ON roles.department_id = departments.id;")
@@ -96,7 +98,7 @@ async function ViewAllRoles() {
     }
 
 }
-
+// View All Employees function
 async function viewAllEmployees() {
 
     const [rows] = await promisePool.query('SELECT e.id AS employee_id, e.first_name AS employee_first_name, e.last_name AS employee_last_name, r.title, d.department_name, r.salary, CONCAT(m.first_name, " ", m.last_name) AS manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id LEFT JOIN roles r ON e.role_id = r.id LEFT JOIN departments d ON r.department_id = d.id;')
@@ -109,7 +111,7 @@ async function viewAllEmployees() {
     }
 
 }
-
+// Add A Department function
 async function AddADepartment() {
 
     let { departmentName } = await inquirer.prompt([
@@ -131,6 +133,7 @@ async function AddADepartment() {
     start()
 
 }
+// Add A Role Function
 async function AddARole() {
 
     const [rowS] = await promisePool.query("SELECT id, department_name FROM departments");
@@ -167,7 +170,7 @@ async function AddARole() {
     start()
 
 }
-
+// Add A Employee function
 async function AddAEmployee() {
     const [rolesResult, managersResult] = await Promise.all([
         promisePool.query("SELECT id, title FROM roles"),
@@ -214,7 +217,7 @@ async function AddAEmployee() {
     })
     start()
 }
-
+// Update An Employee Role function
 async function UpdateAnEmployeeRole() {
     const [rolesResult, employeesResult] = await Promise.all([
         promisePool.query("SELECT id, title FROM roles"),
@@ -251,7 +254,7 @@ async function UpdateAnEmployeeRole() {
     })
     start()
 }
-
+// Update A Manager function
 async function UpdateAManager() {
     const [managersResult, employeesResult] = await Promise.all([
         promisePool.query("SELECT id, CONCAT(first_name, ' ', last_name) AS manager_name FROM employee"),
@@ -288,7 +291,7 @@ async function UpdateAManager() {
     })
     start()
 }
-
+// Delete A Department function
 async function deleteADepartment() {
 
     const [rowS] = await promisePool.query("SELECT id, department_name FROM departments");
@@ -314,7 +317,7 @@ async function deleteADepartment() {
     })
     start()
 }
-
+// Delete A Role function
 async function deleteARole() {
   
     const [rolesResult] = await promisePool.query("SELECT id, title FROM roles")
@@ -342,7 +345,7 @@ async function deleteARole() {
     })
     start()
 }
-
+// Delete An Employee function
 async function deleteAnEmployee() {
   
     const [employeeResult] = await promisePool.query("SELECT id, CONCAT(first_name, ' ', last_name) AS employee_name FROM employee")

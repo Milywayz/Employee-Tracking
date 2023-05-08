@@ -1,3 +1,4 @@
+-- Department Names
 INSERT INTO departments (department_name)
 VALUES
 ('Marketing'),
@@ -7,6 +8,7 @@ VALUES
 ("HR"),
 ("Merchandising");
 
+-- Roles Title, salary, and department Id
 INSERT INTO roles (title, salary, department_id)
 VALUES
 ('Chief marketing Officer', 65000.00, 1),
@@ -22,6 +24,7 @@ VALUES
 ('Merchandising Manager', 75000.00, 6),
 ('Merchandising', 50000.00, 6);
 
+-- Employee First Name, Last Name, Role Id, and Manager Id
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES
 ('Joshua', 'Thomas', 1, NULL),

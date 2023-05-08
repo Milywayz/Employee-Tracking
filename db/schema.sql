@@ -1,13 +1,17 @@
+-- Drops database and recreates it
 DROP DATABASE IF EXISTS employment_db;
 CREATE DATABASE employment_db;
 
+-- How to use the database
 USE employment_db;
 
+-- Department Table
 CREATE TABLE departments(
     id INT AUTO_INCREMENT PRIMARY KEY,
     department_name VARCHAR(30) 
 );
 
+-- Roles Table
 CREATE TABLE roles(
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(30),
@@ -18,6 +22,7 @@ CREATE TABLE roles(
     ON DELETE SET NULL
 );
 
+-- Employee Table
 CREATE TABLE employee(
     id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(30) NOT NULL,
