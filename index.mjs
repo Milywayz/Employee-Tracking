@@ -24,7 +24,7 @@ async function start() {
                 type: 'list',
                 name: 'Employee Manager',
                 message: 'What would you like to do?',
-                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', "Add A Role", "Add A Employee", 'Update An Employee Role', 'Update A Manager Role', 'Exit'],
+                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', "Add A Role", "Add A Employee", 'Update An Employee Role', 'Update A Manager Role', 'Delete A Department', 'Exit'],
 
             },
         ])
@@ -53,6 +53,9 @@ async function start() {
             break;
             case 'Update A Manager Role':
             UpdateAManager();
+            break;
+            case 'Delete A Department':
+                deleteADepartment();
             break;
         case 'Exit':
             console.log('Exiting now...');
@@ -141,7 +144,7 @@ async function AddARole() {
         {
             type: 'list',
             name: 'departmentId',
-            message: 'What is the departmentId of the role?',
+            message: 'What is the department of the role?',
             choices: [...departments]
         }
     ])
@@ -269,6 +272,58 @@ async function UpdateAManager() {
 
 
     const [rows] = await promisePool.query('UPDATE employee SET manager_id = ? WHERE id = ?', [role, employeeName], function (err, results) {
+        if (rows.length === 0) {
+            console.log("Can't enter in that employee");
+        } else {
+            console.table(rows)
+
+        }
+
+    })
+    start()
+}
+
+async function deleteADepartment() {
+
+    const [rowS] = await promisePool.query("SELECT id, department_name FROM departments");
+    const departments = rowS.map(row => ({ name: row.department_name, value: row.id }));
+
+    let { departmentId } = await inquirer.prompt([
+        {
+            type: 'list',
+            name: 'departmentId',
+            message: 'What is the department of the role?',
+            choices: [...departments]
+        }
+    ])
+
+    const [rows] = await promisePool.query('DELETE FROM departments WHERE id = ?', [departmentId], function (err, results) {
+        if (rows.length === 0) {
+            console.log("Can't enter in that employee");
+        } else {
+            console.table(rows)
+
+        }
+
+    })
+    start()
+}
+
+async function deleteADepartment() {
+
+    const [rowS] = await promisePool.query("SELECT id, department_name FROM departments");
+    const departments = rowS.map(row => ({ name: row.department_name, value: row.id }));
+
+    let { departmentId } = await inquirer.prompt([
+        {
+            type: 'list',
+            name: 'departmentId',
+            message: 'What is the department of the role?',
+            choices: [...departments]
+        }
+    ])
+
+    const [rows] = await promisePool.query('DELETE FROM departments WHERE id = ?', [departmentId], function (err, results) {
         if (rows.length === 0) {
             console.log("Can't enter in that employee");
         } else {
