@@ -56,7 +56,7 @@ async function start() {
             break;
         case 'Exit':
             console.log('Exiting now...');
-            return; 
+            process.exit(); 
         default:
             break;
     }
