@@ -24,7 +24,7 @@ async function start() {
                 type: 'list',
                 name: 'Employee Manager',
                 message: 'What would you like to do?',
-                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', "Add A Role", "Add A Employee", 'Update An Employee Role', 'Update A Manager Role', 'Delete A Department','Delete A Role', 'Exit'],
+                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', "Add A Role", "Add A Employee", 'Update An Employee Role', 'Update A Manager Role', 'Delete A Department','Delete A Role','Delete An Employee', 'Exit'],
 
             },
         ])
@@ -59,6 +59,9 @@ async function start() {
             break;
             case 'Delete A Role':
                 deleteARole();
+            break;
+            case 'Delete A Employee':
+                deleteAnEmployee()
             break;
         case 'Exit':
             console.log('Exiting now...');
@@ -329,6 +332,34 @@ async function deleteARole() {
 
 
     const [rows] = await promisePool.query('DELETE FROM roles WHERE id = ?', [role], function (err, results) {
+        if (rows.length === 0) {
+            console.log("Can't enter in that employee");
+        } else {
+            console.table(rows)
+
+        }
+
+    })
+    start()
+}
+
+async function deleteAnEmployee() {
+  
+    const [employeeResult] = await promisePool.query("SELECT id, CONCAT(first_name, ' ', last_name) AS employee_name FROM employee")
+    const employees = employeeResult.map(row => ({ name: row.employee_name, value: row.id }))
+
+    let { employeeName } = await inquirer.prompt([
+        {
+            type: 'list',
+            name: 'employeeName',
+            message: 'Select the employee you would like to delete:',
+            choices: [...employees]
+        }
+    ]);
+
+
+
+    const [rows] = await promisePool.query('DELETE FROM employee WHERE id = ?', [employeeName], function (err, results) {
         if (rows.length === 0) {
             console.log("Can't enter in that employee");
         } else {
