@@ -18,7 +18,7 @@ inquirer and mysql2 is installed into this project for functioning
 ## Usage
 
 ![alt text](./assets/Program-Image.png)
-[Click here to see Deployed Application](https://radiant-plateau-99287.herokuapp.com)
+[Click here to see Deployed Application](https://watch.screencastify.com/v/xezSbRPqhQk5lrOmhP8x)
 
 
 ## License
