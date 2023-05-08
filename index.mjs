@@ -62,7 +62,7 @@ async function start() {
             case 'Delete A Role':
                 deleteARole();
             break;
-            case 'Delete A Employee':
+            case 'Delete An Employee':
                 deleteAnEmployee()
             break;
         case 'Exit':
