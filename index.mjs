@@ -24,7 +24,7 @@ async function start() {
                 type: 'list',
                 name: 'Employee Manager',
                 message: 'What would you like to do?',
-                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', "Add A Role", "Add A Employee", 'Update An Employee Role', 'Update A Manager Role', 'Delete A Department', 'Exit'],
+                choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', "Add A Role", "Add A Employee", 'Update An Employee Role', 'Update A Manager Role', 'Delete A Department','Delete A Role', 'Exit'],
 
             },
         ])
@@ -56,6 +56,9 @@ async function start() {
             break;
             case 'Delete A Department':
                 deleteADepartment();
+            break;
+            case 'Delete A Role':
+                deleteARole();
             break;
         case 'Exit':
             console.log('Exiting now...');
@@ -309,21 +312,23 @@ async function deleteADepartment() {
     start()
 }
 
-async function deleteADepartment() {
+async function deleteARole() {
+  
+    const [rolesResult] = await promisePool.query("SELECT id, title FROM roles")
+    const roles = rolesResult.map(row => ({ name: row.title, value: row.id }));
 
-    const [rowS] = await promisePool.query("SELECT id, department_name FROM departments");
-    const departments = rowS.map(row => ({ name: row.department_name, value: row.id }));
-
-    let { departmentId } = await inquirer.prompt([
+    let { role } = await inquirer.prompt([
+       
         {
             type: 'list',
-            name: 'departmentId',
-            message: 'What is the department of the role?',
-            choices: [...departments]
+            name: 'role',
+            message: 'Select the role you want to delete.',
+            choices: [...roles]
         }
-    ])
+    ]);
 
-    const [rows] = await promisePool.query('DELETE FROM departments WHERE id = ?', [departmentId], function (err, results) {
+
+    const [rows] = await promisePool.query('DELETE FROM roles WHERE id = ?', [role], function (err, results) {
         if (rows.length === 0) {
             console.log("Can't enter in that employee");
         } else {
